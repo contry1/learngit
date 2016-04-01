@@ -4,7 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include "../mqtt/mosq/src/uthash.h"
 
@@ -16,7 +15,6 @@ struct stu
 }stus;
 
 struct stu *usr = NULL;
-//hash find
 struct stu *find_stu (char *id)
 {
 	UT_hash_handle hh;
