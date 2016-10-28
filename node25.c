@@ -134,7 +134,15 @@ void node_init(pnode *new)
 	if(!head)
 		printf("head is null\n");
 	tmp_before = head;
-	
+	/*
+	while(tmp_before&&(tmp_before->next))
+	{
+		tmp_before=tmp_before->next;
+		
+		if(tmp_before->next->num ==val)
+					break;
+	}
+	*/
 	while(tmp_before&&tmp_before->next)
 	{
 		
@@ -146,7 +154,7 @@ void node_init(pnode *new)
 		if(tmp_free->num ==val)
 			{
 				
-				tmp_before->next = tmp_free->next;
+				tmp_before->next = head->next;
 				free(tmp_free);
 				break;
 			}
@@ -215,25 +223,26 @@ void printList(pnode pHead)
     }
     else
     {
-        while(NULL != pHead)
+        while(NULL != pHead&&pHead->next!=NULL)
         {
         	  
         		if(pHead->num !=0)
         			{
         						
         							printf("%d\t",pHead->num);
-        							
+        							pHead = pHead->next;
         				
         			}
         					
-        		
-       		  pHead = pHead->next;
-      			 if(pHead->next==NULL)
-      			 	{
-      			 		printf("*****at the end of node*******\n");
-      			 		break;
-      			 	}
-          
+        			else
+        			{
+        				printf("the node val is 0,so ignore\n");
+        				pHead = pHead->next;
+        				continue;
+        			}
+       		  
+      			 
+           
            
            
         }
@@ -244,46 +253,32 @@ int main()
 {
 	pnode t;
 	
-	int n,i =0;
+	int i =0;
 	//printList(t);
 	t =insert_end(t);
 	printList(t);
-	printf("the insert end  end\n");
+	
 	//t =insert_before(t);
 	//printList(t);
-	scanf("%d",&n);
-	switch(n)
-	{
-		case 0:
-			printf("the first delete(t)\n");
-			t =delete(t);
-			printList(t);
-			break;
-		case 1:
-			printf("the second delete_num(t,4)\n");
-			t =delete_num(t,4);
-			
-			printList(t);
-			break;
-			
-		case 2:
-			printf("the third delete_val(t,5)\n");
-			t =delete_val(t,5);
-			printList(t);
-			break;
-		default:
-			break;
+	
+	printf("fdgggggggggggg1\n");
+	t =delete(t);
+	printList(t);
 	
 	
-	
-	}
-	
-	
-	
-	
-	
+	printf("fdgggggggggggg2\n");
+	t =delete_num(t,4);
+	if(t->num==0)
+			t= t->next;	
+	printList(t);
 	
 	
+	printf("fdgggggggggggg3\n");
+	
+		
+	
+	t =delete_val(t,5);
+	printList(t);
 	return 0;
 
 }

@@ -101,15 +101,12 @@ void node_init(pnode *new)
 		
 	while(tmp_before&&(tmp_before->next))
 	{
-		
+		tmp_before=tmp_before->next;
 		
 		if(tmp_before->next ==tmp)
-			{
-				
 					break;
 			
-			}	
-			tmp_before=tmp_before->next;
+				
 	
 	}
 	tmp_free = tmp;
@@ -123,19 +120,26 @@ void node_init(pnode *new)
 }
 
 
-#if 1
- node* delete_num(pnode head ,int val)
+#if 0
+ node* delete_num(pnode tmp ,int val)
 {
-	pnode tmp_before,tmp_free=NULL;
+	pnode tmp_before,head,tmp_free;
 	
 	tmp_before =NULL;
 	node_init(&tmp_before);
+	node_init(&head);
 	node_init(&tmp_free);
-	if(!head)
-		printf("head is null\n");
 	tmp_before = head;
-	
-	while(tmp_before&&tmp_before->next)
+	/*
+	while(tmp_before&&(tmp_before->next))
+	{
+		tmp_before=tmp_before->next;
+		
+		if(tmp_before->next->num ==val)
+					break;
+	}
+	*/
+	while(tmp_before&&tmp_free)
 	{
 		
 		
@@ -146,7 +150,7 @@ void node_init(pnode *new)
 		if(tmp_free->num ==val)
 			{
 				
-				tmp_before->next = tmp_free->next;
+				tmp_before->next = tmp->next;
 				free(tmp_free);
 				break;
 			}
@@ -164,78 +168,18 @@ void node_init(pnode *new)
 	
 }
 #endif
-
-
-pnode delete_val(pnode head,int val)
-{
-	pnode delete=NULL;
-	pnode delete_before =NULL;
-	node_init(&delete);
-	node_init(&delete_before);
-	
-	if(!head)
-		printf("haead node is null \n");
-		
-	delete =  head;
-	if(delete==NULL||delete->next==NULL)
-		{
-			printf("the delete enode is null\n");
-					return NULL;
-		}
-	
-	while((delete->num != val)&&delete->next!=NULL)
-	{
-		delete_before = delete;
-		delete= delete->next;
-		if(delete->num != val&&delete->next==NULL)
-			{
-				printf("there is  no find the val of node to delete\n");
-				break;
-			}
-		if(delete->num==val)
-			{
-					delete_before->next =  delete->next;
-					free(delete);
-					break;
-			}
-	
-	}
-	/*this time the delete_before is recording the node where berore delete node.*/
-
-	return head;
-
-
-}
 void printList(pnode pHead)
 {
-		
     if(NULL == pHead)   
     {
-        printf("\n");
+        printf("00000000\n");
     }
     else
     {
         while(NULL != pHead)
         {
-        	  
-        		if(pHead->num !=0)
-        			{
-        						
-        							printf("%d\t",pHead->num);
-        							
-        				
-        			}
-        					
-        		
-       		  pHead = pHead->next;
-      			 if(pHead->next==NULL)
-      			 	{
-      			 		printf("*****at the end of node*******\n");
-      			 		break;
-      			 	}
-          
-           
-           
+            printf("%d ",pHead->num);
+            pHead = pHead->next;
         }
         printf("\n");
     }
@@ -244,46 +188,19 @@ int main()
 {
 	pnode t;
 	
-	int n,i =0;
+	
 	//printList(t);
 	t =insert_end(t);
 	printList(t);
-	printf("the insert end  end\n");
+	
 	//t =insert_before(t);
 	//printList(t);
-	scanf("%d",&n);
-	switch(n)
-	{
-		case 0:
-			printf("the first delete(t)\n");
-			t =delete(t);
-			printList(t);
-			break;
-		case 1:
-			printf("the second delete_num(t,4)\n");
-			t =delete_num(t,4);
-			
-			printList(t);
-			break;
-			
-		case 2:
-			printf("the third delete_val(t,5)\n");
-			t =delete_val(t,5);
-			printList(t);
-			break;
-		default:
-			break;
-	
-	
-	
-	}
-	
-	
-	
-	
-	
-	
-	
+	printf("fdgggggggggggg\n");
+	t =delete(t);
+	printList(t);
+	printf("fdgggggggggggg\n");
+	//t =delete_num(t,4);
+	printList(t);
 	return 0;
 
 }
