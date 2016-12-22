@@ -1,0 +1,68 @@
+        // fifo.c
+             #include <stdio.h>
+             #include <stdlib.h>
+             #include <string.h>
+             #include <unistd.h>
+             #include <signal.h>
+             #include <sys/types.h>
+             #include <sys/wait.h>
+ #include <sys/types.h>
+       #include <sys/stat.h>
+             #include <fcntl.h>
+#define fifo_name "/tmp/fifo"
+
+int main(int argc, char const *argv[])
+{
+      int res;
+      int open_mode = 0;
+      int i;
+      if (argc<2)
+      {
+            fprintf(stderr, "%s\n",*argv );
+            /* code */
+      }
+      for (i = 0; i < argc; ++i)
+      {
+            /* code */
+            if (strncmp(*++argv,"O_RDONLY",8)==0)
+            {
+                  open_mode |=O_RDONLY;
+                  /* code */
+            }
+            if (strncmp(*argv,"O_WRONLY",8)==0)
+            {
+                  open_mode|= O_WRONLY;
+                  /* code */
+            }
+            if (strncmp(*argv,"O_NONBLOCK",10)==0)
+            {
+                  open_mode |= O_NONBLOCK;
+                  /* code */
+            }
+      }
+       if (access(fifo_name,F_OK)==-1)
+    {
+        /* code */
+     
+         res = mkfifo(fifo_name,0777);
+         if (res)
+         {
+            perror("mkfifo");
+            exit(0);
+               /* code */
+         }
+
+   }
+   printf("process %d open fifo\n",getpid() );
+   res = open(fifo_name,open_mode);
+   printf("process %d result %d\n",getpid() ,res);
+   sleep(5);
+   if (res!=-1)
+   {
+      (void)close(res);
+         /* code */
+   }
+   printf("process %d  finish\n",getpid() );
+
+      return 0;
+}
