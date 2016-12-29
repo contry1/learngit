@@ -152,8 +152,10 @@ static void server(int fd1[2],int fd2[2])
       //dup2(fd2[0],0);
       sleep(2);
       memset(buf,'\0',MAXNITEMS);
-      fflush(stdin);
-      int nread = read(fd2[1],buf,sizeof(buf));
+
+      int nread = read(fd2[0],buf,sizeof(buf));
+/*      the problem is happen there,the fd2[0] is = 0,equal input from stdin,so the read will be block at default,the
+      question is fd value is same to 0????????????*/
       if (nread == -1) 
           perror("father read");
           /* code */
