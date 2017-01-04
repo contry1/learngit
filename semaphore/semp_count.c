@@ -13,12 +13,13 @@ void * fun1(void *arg);
 void * fun2(void *arg);
 
 sem_t psem;
+int sum = 0;
 int main(int argc, char const *argv[])
 {
         sem_init_t();
         pthread_t tid1;
         pthread_t tid2;
-        int res;
+       
 
       
         thread_create(&tid1,fun1);
@@ -41,7 +42,7 @@ static void thread_create(pthread_t *tid,void *(*fun)(void *))
        if (res == 0)
        printf("successfully create");
        
-       sleep(7);
+       sleep(2);
 
 }
 
@@ -64,17 +65,17 @@ void * fun1(void *arg)
 {
     printf(" thread 1\n");
     int i = 0;
-    int sum = 0;
     for (; ; ) {
         sum +=i;
         i++;
-        printf("sum:%d\n",sum );
+        printf("thread 1 sum:%d\n",sum );
         if (sum >100) {
             sem_post(&psem);
             printf("notice thread 2\n");
             break;
             /* code */
         }
+        sleep(1);
 
         /* code */
     }
@@ -83,8 +84,16 @@ void * fun1(void *arg)
 
 void * fun2(void *arg)
 {
+    int   i  =0;
     printf("  thread 2\n");
     sem_wait(&psem);
+    while(sum >0)
+    {
+        sum -=i;
+        i++;
+        printf("thread 2 sum:%d\n", sum);
+        sleep(1);
+    }
     pthread_exit((void *)0);
 }
 static void sem_init_t(void)
