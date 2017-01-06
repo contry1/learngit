@@ -1,4 +1,3 @@
-// name_mqp.c
 
 #include "mq.h"
 /*the attr must locate here,because we must init it,if we loacte it in main,it will indicate  we not init
@@ -11,13 +10,8 @@ int main(int argc, char const *argv[])
     mqd_t mq;
     unsigned int val;
 
-    flag = O_RDWR|O_CREAT;
+    flag = O_WRONLY;
     val = 0;
-
-    attr.mq_flags = 0;  
-    attr.mq_maxmsg = 10;  
-    attr.mq_msgsize = 33;  
-    attr.mq_curmsgs = 0;  
 
     printf("please input file name:\n");
     if (argc != 2) {
@@ -25,7 +19,7 @@ int main(int argc, char const *argv[])
         exit(1);
         /* code */
     }
-    mq = mq_open(argv[1],flag,0777,&attr);
+    mq = mq_open(argv[1],flag);
     if (mq == (mqd_t) -1 )
         perror("open err");
     else
@@ -33,7 +27,7 @@ int main(int argc, char const *argv[])
 
 
     
-    mq_getattr_t(mq,&attr);
-    mq_close_t(mq);
+    mq_send_t(mq,"h",1,10);
+    // mq_close_t(mq);
     return 0;
 }
