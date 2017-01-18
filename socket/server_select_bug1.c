@@ -26,7 +26,10 @@
 #include <netinet/in.h>  
 #include <arpa/inet.h>    
 #include <signal.h>
-#include <pthread.h>
+// #include <pthread.h>
+ #include <sys/select.h>
+#include <errno.h>
+
 #include <netdb.h>
 #define  PORT 1234    
 #define  BACKLOG 10 
@@ -40,11 +43,6 @@ socklen_t  addrlen;
 
 void listen_t(int fd);
 int * accept_t(int fd,int *fd_dst);
-
-void create_thread(pthread_t *pid,void *arg,pfunc pf);
-
-
-void * do_ser_func(void *arg);
 
 
 void ser_data(int fd,char buf[]);
@@ -65,7 +63,6 @@ int main() {
 
   int i = 0;
   int ret = 0;
-  pthread_t thread_id[10];
  
   // struct hostent *gethostbyname(const char *name);
   
@@ -80,14 +77,14 @@ int main() {
   };
   sf = &sfd;
 
- // /init the lock
-  if ((ret = pthread_mutex_init(&sf->lock,NULL))== -1)
-      perror("init lock");
-
+  
   if((sf->listenfd  = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("Creating  socket failed.");  
     exit(1);     
   } 
+
+
+
 
   int opt =SO_REUSEADDR;  
   setsockopt(sf->listenfd,SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));  
@@ -100,33 +97,94 @@ int main() {
     perror("Binderror.");   
     exit(1);     
   }
+   
     listen_t(sf->listenfd); /* code */ 
+
     int *p =NULL;
+    int nread = 0;
+    // int retval = 0;
+    // int maxfd = 0;
     while(1) {
        
-        p = accept_t(sf->listenfd,&(sf->connectfd));
-        
+         fd_set rset,allset;
+         FD_ZERO(&allset);
+         FD_SET(sf->listenfd,&allset);
+         
+         int maxfd = sf->connectfd > sf->listenfd ? sf->connectfd :sf->listenfd;
+         
+         int retval =  select(maxfd+1,&allset,NULL,NULL,NULL);
+        if (retval == -1){
+            switch(errno){
 
-        printf("有新的客户端连接请求\n");
-        printf("the sfd connectfd:%d\n", *p);
-        printf("\nconnection from cient's ip is%s,port is %d\n",inet_ntoa(client.sin_addr),htons(client.sin_port));
-        pthread_mutex_trylock(&sf->lock);
-        create_thread(&thread_id[i++],(void *)sf,do_ser_func);
-        pthread_mutex_unlock(&sf->lock); 
+                case EBADF:
+                    printf("An invalid file descriptor was given in one of the sets.  (Perhaps a file descriptor that was already closed, or one on which an error has occurred.)\n");
+                    break;
+                case EINTR:
+                    printf("A signal was caught\n");
+                    break;
+                case EINVAL:
+                    printf("nfds is negative or the value contained within timeout is invalid. \n");
+                    break;
+
+                case ENOMEM:
+                    printf("unable to allocate memory for internal tables\n");
+                    break;
+                default:
+                    printf("undef err\n");
+                    break;
+
+
+            }
+            perror("select ");
+            
+          
+        }
+        else if (retval){
+            
+            retval = FD_ISSET(sf->listenfd, &allset);
+            printf("FD_ISSET retval:%d\n",retval);
+            if (retval ==1) {
+                printf("有新的客户端连接请求\n");
+                p = accept_t(sf->listenfd,&(sf->connectfd));
+                printf("the sfd connectfd:%d\n", *p);
+                printf("\nconnection from cient's ip is%s,port is %d\n",inet_ntoa(client.sin_addr),htons(client.sin_port));
+                // add the connectfd
+                FD_SET(sf->connectfd,&allset);
+                printf("adding client on fd %d\n", sf->connectfd);   
+            }else{
+                printf("mu有新的客户端连接请求\n");
+            }
+            retval = FD_ISSET(sf->connectfd, &allset);
+            printf("FD_ISSET sf->connectfd retval:%d\n",retval);
+            if (retval ==1) {
+                printf("the sfd connectfd:%d\n", *p);
+                printf("\nconnection from cient's ip is%s,port is %d\n",inet_ntoa(client.sin_addr),htons(client.sin_port));
+                // ser_data(sf->connectfd,sf->buf);
+
+                p = recv_t(sf->connectfd,sf->buf,MAXNITEMS,0,&nread);
+                if (*p > 0) {
+                    printf("服务器端收到字节 :%d byte\n", *p);
+                // /send to same data to client
+                    send_t(sf->connectfd,sf->buf,strlen(sf->buf),0);
+                    putchar('\n');
+                /* code */
+                }else{
+                    printf("客户端断开\n");
+                    break;
+                }
+
+            }
+
+
+        }
         signal(SIGINT,sigint);
         sleep(1);
   
-
   }
-  
   
   return 0;
 
 }
-
-
-
-
 void listen_t(int fd)
 {
   if(listen(fd,BACKLOG)== -1) {    /*     calls   listen() */
@@ -145,36 +203,6 @@ int * accept_t(int fd,int *fd_dst)
   return fd_dst;
 
 }
-
-void create_thread(pthread_t *pid,void *arg,pfunc pf)
-{
- 
-  int err = pthread_create(pid,NULL,pf,arg);
-  if (err!=0) {
-    perror("not create thread1");        /* code */
-  }else{
-    printf("new thread :%ld\n",pthread_self());/*there is new thread,not main thread*/
-  }
-
-}
-
-void * do_ser_func(void *arg)
-{
-
-  pthread_detach(pthread_self());
-  struct serfd *sfd =NULL;
-  sfd  = (struct serfd *)(arg);
-  // pthread_mutex_lock(&sfd->lock);
-  printf("server listenfd:%d server connectfd:%d\n",sfd->listenfd,sfd->connectfd );
-  ser_data(sfd->connectfd,sfd->buf);
-  // pthread_mutex_unlock(&sfd->lock);
-  
-  close(sfd->connectfd);
-  pthread_exit((void *)0);
-}
-
-
-
 
 void ser_data(int fd,char buf[MAXNITEMS])
 {
