@@ -113,8 +113,8 @@
                 }
             }
             else if (retval){
-                printf("the ready listenfd:%d|the ready connectfd:%d\n",sf->listenfd,sf->connectfd );
-                for (fd = 0; fd <maxfd ; ++fd) {
+                // printf("the ready listenfd:%d|the ready connectfd:%d\n",sf->listenfd,sf->connectfd );
+                for (fd = 0; fd <BACKLOG ; ++fd) {
                     if(FD_ISSET(fd, &rset)){
                         if (fd == sf->listenfd) {
                            printf("有新的客户端连接请求\n");
@@ -143,14 +143,9 @@
                               }
                         }
                         
-                    }else{
-
-                        printf("the fd :%d is not readyfd\n",fd);
-                        // close(fd);
-                        // FD_CLR(fd,&rset);
                     }
                     
-                    /* code */
+                   
                 }
                
 
