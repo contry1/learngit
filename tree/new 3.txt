@@ -1,0 +1,52 @@
+void pop (char *stack,char *dest)
+{
+	strcpy(dest,stack);	
+}
+int re (char * str)
+{
+	typedef struct stack_t{
+		char * value;
+		int index;
+	}stack;
+	
+	stack * st = malloc(sizeof(stack));
+	if(st)
+		st->value = malloc(strlen(str)+1);
+	st->index = 0;	
+	int i,j;
+	for(i=0;i<=strlen(str);i++)
+	{
+		st->value[st->index]  = str[i];
+		if(str[i]==32 || str[i]== 0)
+		{
+			while(st->index>=0)
+			{
+				pop(st->value,str);
+				st->index--;
+			}
+		
+		}
+		
+		st->index++;
+	
+	}
+}
+
+
+typedef struct btree{
+	struct btree  *left;
+	struct btree  *right;
+	int value;
+}tree;
+
+
+
+tree * tree_init(tree * tr)
+{
+	if(tr == NULL)
+		return;
+	tr->left = tr->right = NULL;
+	tr->value = -1;
+	return tr;
+}
+
