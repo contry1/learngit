@@ -1,0 +1,143 @@
+//地柜
+void insert_tree_demo(b_tree * bt, int  value)
+{
+	int left = 0;
+	int right = 0;
+	std::cout << "please input new node value:" << value << endl;
+	if (!bt)
+	{
+		bt = create_tree(value);
+		return ;
+	}
+	if (bt->value == value)
+		return ;
+	else if (bt->value > value)
+	{
+		if (bt->left == NULL)
+		{
+			bt->left = create_tree(value);
+			return ;
+		}
+		else
+		{
+			insert_tree3(bt->left, value);
+		}
+
+	}
+	else if (bt->value < value)
+	{
+		if (bt->right == NULL)
+		{
+			bt->right = create_tree(value);
+			return ;
+		}
+		else
+		{
+		
+			 insert_tree3(bt->right, value);
+		}
+
+	}
+
+
+}
+
+//第二种地柜
+void insert_tree_demo2(b_tree * bt, int  value)
+{
+	
+	std::cout << "please input new node value:" << value << endl;
+	if (!bt)
+	{
+		bt = create_tree(value);
+		return;
+	}
+	if (bt->value == value)
+		return;
+	if (bt->value > value&& bt->left == NULL)
+	{
+		bt->left = create_tree(value);
+		return;
+	}
+	if (bt->value < value&& bt->right == NULL)
+	{
+		bt->right = create_tree(value);
+		return;
+	}
+
+	 if (bt->value > value)
+	{
+	
+			insert_tree3(bt->left, value);
+	
+
+	}
+	else if (bt->value < value)
+	{
+	
+
+			insert_tree3(bt->right, value);
+	
+
+	}
+
+
+}
+
+// 非递归
+b_tree * insert_tree4(b_tree * bt, int  value)
+{
+
+		
+	b_tree * head = bt;
+	std::cout << "please input new node value:" << value << "\t"<<bt <<endl;
+
+run:
+	if (!bt)
+	{
+		bt = create_tree(value);
+		return head;
+	}
+	
+	if (bt->value == value)
+		return bt;
+	else if (bt->value > value)
+	{
+		if (bt->left == NULL)
+		{
+			bt->left = create_tree(value);
+			//return 	bt->left;
+			
+		}
+		else
+		{
+			std::cout << "please input new node value left:" << value << "\t" << bt->left << endl;
+		   // head =  insert_tree3(bt->left, value);
+
+			bt = bt->left;
+			goto run;
+		}
+
+	}
+	else if (bt->value < value)
+	{
+		if (bt->right == NULL)
+		{
+			bt->right = create_tree(value);
+
+			//	return bt->right;
+			
+		}
+		else
+		{
+		
+			std::cout << "please input new node value right:" << value << "\t" << bt->right << endl;
+			//head= insert_tree3(bt->right, value);
+			bt = bt->right;
+			goto run;
+		}
+
+	}
+	return head;
+
+}
