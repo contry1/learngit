@@ -141,3 +141,83 @@ run:
 	return head;
 
 }
+
+
+
+//same return 1,not return 0
+int treeis_same(tree * p, tree * q)
+{
+	if (p == NULL&&q || q == NULL&&p)
+		return -1;
+	else if (p == NULL&&q == NULL)
+		return 0;//?
+	else
+	{
+		if (p->value != q->value)
+			return -1;
+		else {
+			treeis_same(p->left, q->left);
+			treeis_same(p->right, q->right);
+		}
+	}
+
+}
+
+//0 is iso ,other is not
+int treeis_iso(tree * node)
+{
+	//null ,head is 1
+	if (node == NULL)
+		return 1;
+	else if (node&&node->left == NULL &&node->right == NULL)
+		return 1;
+	tree * p = node;
+	tree * q = node;
+	tree * p1 = NULL;
+	tree * q1 = NULL;
+loop:
+	p1 = p;
+	q1 = q;
+	p = p->left;
+	q = q->right;
+err:
+	if (p == NULL&&q || q == NULL&&p)
+		return -1;
+	else
+	{
+		if (p == NULL&&q == NULL)
+		{
+			p = p1->right;
+			q = q1->left;
+			if (p == NULL&&q == NULL)
+				return 0;
+			else
+				goto err;
+		}
+		else
+		{
+			if (p->value != q->value)
+				return -1;
+			else {
+				goto loop;
+
+			}
+		}
+
+	}
+	
+}
+
+//地柜
+int treeis_iso(tree * root)
+{
+	int dep = 0;
+	if (root == NULL && dep == 0)
+		return 1;
+	else if (dep == 0&& root&&root->left == NULL &&root->right == NULL)
+		return 1;
+	
+	if (root->left->value != root->right->value && dep == 0)
+		return 0;
+	if (1);
+}
