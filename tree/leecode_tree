@@ -333,3 +333,36 @@ void itor2(tree * root)
 	
 
 }
+
+//左叶子节点之和
+int left_sum(tree * tr)
+{
+	static int num = 0;
+	if (tr == NULL)
+	{
+		cout << "null:" << endl;
+		return 0;
+	}
+
+	
+
+	if (tr->left && tr->left->left == NULL&&tr->left->right == NULL)
+	{
+		cout << "left child:" << tr->left->value << endl;
+		num += tr->left->value;
+	}
+	//
+	//int left = left_sum(tr->left);
+
+	//if (left >= 0)
+	//	cout << left << "left" << endl;
+	//int right = left_sum(tr->right);
+
+	//if (right >= 0)
+	//cout << "right" << right << endl;
+
+	left_sum(tr->left);
+	left_sum(tr->right);
+	cout << "num" << num << endl;
+	return num;
+}
