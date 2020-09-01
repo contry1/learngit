@@ -366,3 +366,147 @@ int left_sum(tree * tr)
 	cout << "num" << num << endl;
 	return num;
 }
+
+
+
+//中序遍历，非递归
+typedef struct n {
+	struct n * prev;
+	struct n * next;
+	tree * t;
+}node_t;
+
+node_t * node = NULL;
+int stack[100] = {0};
+void insert(node_t * p)
+{
+	if (p)
+	{
+		node->next = p;
+		p->prev = node;
+		node = p;
+		node->next = NULL;
+	}
+
+}
+void mid_itor(tree * root)
+{
+	int i = 0;
+	tree * old = root;
+	tree * left_root = NULL;
+	node = new node_t;
+	memset(node, 0, sizeof(node_t *));
+
+	while (root)
+	{
+		node_t * one = new node_t;
+		one->t = root;
+		insert(one);
+
+		left_root = root;
+		root = root->right;
+
+	}
+
+	root = left_root;
+	cout << "ago right i=" << i << endl;
+	stack[i++] = root->value;
+	cout << "after right i=" << i << endl;
+
+	while (node->t != old)
+	{
+		stack[i++] = node->prev->t->value;
+		if (node->prev->t->left)
+		{
+			stack[i++] = node->prev->t->left->value;
+			//back the father node
+			cout << "leftest right value============" << endl;
+		}
+		node = node->prev;
+	}
+	i--;
+
+	int j = i;
+	cout << "total right i=" << i << endl;
+	while (j >= 0)
+		cout << stack[j--] << " i=" << j << endl;
+
+
+	////next is left sub tree
+	tree * left = old->left;
+	tree * back = NULL;
+	int flag = 0;
+	while (left)
+	{
+		root = left;// old->left;
+		cout << "left root value0: " << root->value << endl;
+	
+		while (root)
+		{
+
+			node_t * one2 = new node_t;
+			one2->t = root;
+			insert(one2);
+		/*	cout << "INSERT============" << endl;*/
+			left_root = root;
+			root = root->right;
+		
+				
+		}
+		root = left_root;
+	
+		cout<<node->prev->t->left->value << endl;
+
+		if (back&& back == root)
+		{
+			cout << "back==========: " << back->value << endl;
+			//在back 赋值的地方已经插入了，这里不用了
+		}
+		else
+		{
+			cout << "left root value1==========: " << root->value << endl;
+			stack[i] = root->value;
+			i++;
+		}
+		cout << "left root value2: " << left->value << endl;
+		cout << "node->t value: " << node->t->value << endl;
+		cout << "node->prev->t value: " << node->prev->t->value << endl;
+		while (node->t != left)
+		{
+			cout << "node->prev->t value 2===========: " << node->prev->t->value << endl;
+			stack[i++] = node->prev->t->value;
+			if (node->prev->t->left)
+			{
+				cout << "ago right 2 i=" << i <<"\t"<< node->prev->t->value<<"\tnode value:"<< node->t->value<< endl;
+				if (node->prev->t->left->right == NULL)
+				{
+					cout << "LEAVE THE ROOT ADD" << endl;
+				/*}
+				else
+				{*/
+					stack[i++] = node->prev->t->left->value;
+					back = node->prev->t->left;
+				}
+				
+				cout << "after right 2 i=" << i << "\t" << node->prev->t->left->value << "\tnode value:" << node->t->value << endl;
+				//back the father node
+			/*	cout << "leftest right value============" << endl;*/
+			}
+			node = node->prev;
+		}
+		/*stack[i++] = left->value;*/
+
+		left = left->left;
+	}
+
+
+	i--;
+	//pop(stack);
+	while (i >= 0)
+	{
+		cout << i << '\t' << stack[i] << endl;
+		i--;
+	}
+
+
+}
