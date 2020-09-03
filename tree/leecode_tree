@@ -569,3 +569,43 @@ int convert(int a[], int m, int b[], int n)
 	}
 	return 0;
 }
+
+
+//杨慧三角
+void  yang(int num)
+{
+	
+	int i = 0;
+	int j = 0;
+	int a[10][10];
+
+	//j line num,i comn num
+	for (j = 0; j <= num - 1; j++)
+	{
+		for (i = 0; i <= j; i++)
+		{
+		
+			if (j == 0||j ==1)
+			{
+				a[i][j] = 1;
+				cout << a[i][j] << "\t";
+			}
+			else if (i == j || i ==0)
+			{
+				a[i][j] = 1;
+				cout << a[i][j] << "\t";
+			}
+			else
+			{
+			
+				a[i][j] = a[i - 1][j - 1] + a[i][j - 1];
+				cout << a[i][j] << "\t";
+		
+			
+			}
+			
+		}
+		cout << endl;
+	}
+
+}
