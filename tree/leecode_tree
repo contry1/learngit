@@ -609,3 +609,63 @@ void  yang(int num)
 	}
 
 }
+
+
+
+//qsort
+void qs(int a[], int left, int right)
+{
+	int i = left;
+	int j = right;
+	int tem = a[i];
+	if (left >= right)
+		return;
+	while (i<j)
+	{
+	/*	cout << "a" << a[i] << endl;*/
+		while (i<j &&a[j] > tem)
+		{
+			j--;
+		}
+	
+
+		if (j > i)
+		{
+			cout << "0i:" << i << endl;
+			a[i++] = a[j];
+			cout << "i:" << i << endl;
+		}
+		else
+			break;
+	
+
+		while (i<j&&a[i] < tem)
+		{
+			i++;
+		/*	cout << "i:" << i << endl;*/
+		}
+		cout << "0j:" << j << endl;
+		if (j > i)
+		{
+
+			a[j--] = a[i];
+			cout << "j:" << j << endl;
+		}
+		else
+			break;
+
+
+	}
+	a[i] = tem;
+	//cout << "k:" <<i<< a[i] << endl;
+	//cout << "k:" << a[0] << endl;
+	//cout << "k:" << a[1] << endl;
+	//cout << "k:" << a[2] << endl;
+	//cout << "k:" << a[3] << endl;
+
+
+	//for (i = 0; i <6; i++)
+	//	cout <<"ll:"<< a[i] << endl;
+	qs(a, left, i - 1);
+	qs(a, i + 1, right);
+}
