@@ -510,3 +510,62 @@ void mid_itor(tree * root)
 
 
 }
+
+
+
+//合并两个有序数组
+int convert(int a[], int m, int b[], int n)
+{
+	int i = 0;
+	int j = 0;
+	for (j = 0; j < n; j++)
+	{
+		if (a[i] <= b[j])
+		{
+			int k = 0;
+			for (k = m; k > i+1 ; k--)//m
+			{
+				a[k] = a[k-1];
+				cout<<"k:" << a[k] << a[k + 1] << endl;
+			}
+
+			a[i + 1] = b[j];
+
+			int l = 0;
+			i++;
+		
+			for (l = i; l < m ; l++)
+			{
+				if (a[l] >= a[l + 1])//=
+				{
+					swap(&a[l], &a[l + 1]);
+					cout<<"l:" << a[l] << a[l+ 1] << endl;
+				}
+				else
+				{
+					i = l;
+					break;
+				}
+				
+			}
+			m++;
+		}
+		else
+		{
+			int k2 = 0;
+			for (k2 = m; k2 > i  ; k2--)//m-1?
+			{
+				a[k2] = a[k2-1];
+				cout <<"k2:"<< a[k2] << a[k2 + 1] << endl;
+			}
+
+			a[k2] = b[j];
+			i++;
+			m++;
+
+			
+		}
+
+	}
+	return 0;
+}
