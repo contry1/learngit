@@ -789,3 +789,72 @@ void qs(int a[], int left, int right)
 	qs(a, left, i - 1);
 	qs(a, i + 1, right);
 }
+
+
+
+///tree definition and construct
+typedef struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+
+}tree;
+tree * create(int value)
+{
+	tree * p = (tree *)malloc(sizeof(tree));//new tree;
+	p->left = p->right = NULL;
+	p->val = value;
+	return p;
+}
+
+void insert(tree * node, int num)
+{
+	if (!node)
+		create(num);
+	if(node->val>num && node->left == NULL)
+		node->left = create(num);
+	if (node->val<num && node->right == NULL)
+		node->right = create(num);
+	if (node->val>num)
+		insert(node->left,num);
+	if (node->val<num)
+		insert(node->right, num);
+}
+
+void interor(tree * node)
+{
+	if (!node)
+		return;
+	cout << "value" << node->val << endl;
+	/*node = node->left;
+	node = node->right;*/
+	interor(node->left);
+	interor(node->right);
+}
+
+void interor_mid(tree * node)
+{
+	if (!node)
+		return;
+
+	/*node = node->left;
+	node = node->right;*/
+	interor(node->left);
+	cout << "value:\t" << node->val << endl;
+	interor(node->right);
+}
+
+	typedef struct TreeNode  tree;
+	tree *tree2 = NULL;
+	tree2 = create(10);
+	insert(tree2, 1);
+	insert(tree2, 0);
+	insert(tree2, -1);
+	insert(tree2, 13);
+	insert(tree2, 8);
+	insert(tree2, 6);
+	insert(tree2, 9);//9
+	insert(tree2, 12);
+	insert(tree2, 15);
+	insert(tree2, 14);
+	insert(tree2, 16);
