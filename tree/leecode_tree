@@ -529,7 +529,109 @@ void mid_itor(tree * root)
 
 }
 
+//nnnnnnnnnnnnnnnnnnnnnn
+int* inorderTraversal2(struct TreeNode* root, int* returnSize) {
+	int i = 0;
+	struct TreeNode * old = root;
+	struct TreeNode * left_root = NULL;
+	node = (node_t *)malloc(sizeof(node_t));
+	memset(node, 0, sizeof(node_t));
 
+	while (root)
+	{
+		node_t * one = (node_t *)malloc(sizeof(node_t)); //new node_t;
+		one->t = root;
+		insert(one);
+
+		left_root = root;
+		root = root->right;
+
+	}
+
+	root = left_root;
+	stack[i++] = root->val;
+
+	while (node->t != old)
+	{
+		stack[i++] = node->prev->t->val;
+		if (node->prev->t->left)
+		{
+			stack[i++] = node->prev->t->left->val;
+			//back the father node
+		}
+		node = node->prev;
+	}
+	i--;
+
+	////next is left sub tree
+	struct TreeNode * left = old->left;
+	struct TreeNode * back = NULL;
+	int flag = 0;
+	while (left)
+	{
+		root = left;// old->left;
+
+		while (root)
+		{
+
+			node_t * one2 = (node_t *)malloc(sizeof(node_t)); //new node_t;
+			one2->t = root;
+			insert(one2);
+			left_root = root;
+			root = root->right;
+
+
+		}
+		root = left_root;
+
+		cout << node->prev->t->left->val << endl;
+
+		if (back&& back == root)
+		{
+			//在back 赋值的地方已经插入了，这里不用了
+		}
+		else
+		{
+			stack[i] = root->val;
+			i++;
+		}
+
+		while (node->t != left)
+		{
+		
+			stack[i++] = node->prev->t->val;
+			if (node->prev->t->left)
+			{
+				if (node->prev->t->left->right == NULL)
+				{
+					stack[i++] = node->prev->t->left->val;
+					back = node->prev->t->left;
+				}
+
+			}
+			node = node->prev;
+		}
+	
+		left = left->left;
+	}
+
+
+	i--;
+
+	int * st = (int *)malloc(100);
+	memset(st, 0, 100);
+	int j = 0;
+	while (i >= 0)
+	{
+		/*	cout << i << '\t' << stack[i] << endl;*/
+		st[j] = stack[i];
+		i--;
+		j++;
+	}
+	j--;
+	*returnSize = j;
+	return st;
+}
 
 //合并两个有序数组
 int convert(int a[], int m, int b[], int n)
