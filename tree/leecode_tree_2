@@ -56,3 +56,21 @@ int treeis_iso(tree * node)
 		return 1；
 	return iso(node->left,node->right);
 }
+
+
+bool path(struct TreeNode* left, struct TreeNode* right,int sum)
+{
+    if(left == NULL || right == NULL)
+        return 0;
+    if(left->val + right->val == sum)
+        return 1;
+    return path();
+}
+
+bool hasPathSum(struct TreeNode* root, int sum){
+    if(root == NULL)
+        return 0;
+    if(root && root->left == NULL && root->right== NULL && root->val == sum)
+        return 1;
+    return path(root->left,root->right,sum);
+}
