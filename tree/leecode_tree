@@ -858,3 +858,56 @@ void interor_mid(tree * node)
 	insert(tree2, 15);
 	insert(tree2, 14);
 	insert(tree2, 16);
+
+void interor(tree * node)
+{
+	if (!node)
+		return;
+	cout << "value" << node->val << endl;
+	/*node = node->left;
+	node = node->right;*/
+	interor(node->left);
+	cout << "value left" << node->val << endl;
+	interor(node->right);
+	cout << "value right" << node->val << endl;
+}
+线序输出
+value10
+value1
+value0
+value-1
+value left-1
+value right-1
+value left0
+value right0
+value left1
+value8
+value6
+value left6
+value right6
+value left8
+value9
+value left9
+value right9
+value right8
+value right1
+value left10
+value13
+value12
+value left12
+value right12
+value left13
+value15
+value14
+value left14
+value right14
+value left15
+value16
+value left16
+value right16
+value right15
+value right13
+value right10
+请按任意键继续. . .
+
+可以看到两个位置的输出点，是按照栈的结果输出的，而且left 和right要栈顺序匹配。根据这一个特，我么可以很好的确认和地方输出的结果
