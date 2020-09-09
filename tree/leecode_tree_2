@@ -1,0 +1,30 @@
+int flag = 1;
+int treeis_same(tree * p, tree * q)
+{
+	if (p == NULL&&q || q == NULL&&p)
+
+		return 0;
+	else if (p == NULL&&q == NULL)
+		return -1;//?
+
+	int f1 = treeis_same(p->left, q->left);
+	int f2 = treeis_same(p->right, q->right);
+
+	if (p->val != q->val)
+	{
+		cout << "value p1: " << p->val << endl;
+		cout << "value q1: " << q->val << endl;
+		flag = 0;
+		return 0;
+	}
+	
+	else
+	{
+		cout << "value p: " << p->val << endl;
+		cout << "value q: " << q->val << endl;
+		//return 1;
+	}
+	cout << "f1: f2:    " << f1<<f2 << endl;
+//	return flag;
+
+}
