@@ -148,3 +148,27 @@ tree * inver(tree * root)
 
 	return root;
 }
+
+//最近龚工祖先
+tree * ans(tree * root, tree *p, tree * q)
+{
+	if (root == NULL)
+	{
+		return NULL;
+	}
+	
+	if (p->val <= root->val && q->val <= root->val)
+	{
+		return ans(root->left, p, q);
+	}
+	else if (p->val <= root->val && q->val <= root->val)
+	{
+		return ans(root->right, p, q);
+	}
+	else
+	{
+		return root;
+	}
+
+
+}
