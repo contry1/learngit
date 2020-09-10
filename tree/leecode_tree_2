@@ -74,3 +74,37 @@ bool hasPathSum(struct TreeNode* root, int sum){
         return 1;
     return path(root->left,root->right,sum);
 }
+
+
+
+//REVERSE  LINK
+link2* q;
+link2*  re(link2* node)
+{
+
+	if (node->next == NULL)
+	{
+	
+		q = node;
+		return node;
+	}
+	
+	//if (node == NULL)
+	//	return NULL;
+	cout << node->val << endl;
+
+	link2* p = node->next;
+	
+	cout << "p0:" << p->val << endl;
+//	cout << "po:"  << endl;
+	re(node->next);
+	//p = node->next;
+	p->next = node;
+	cout << "next:" << p->next->val << endl;
+	node->next = NULL;
+	p = node;
+	cout << "p:"<<node->val << endl;
+
+
+	return q;
+}
