@@ -108,3 +108,25 @@ link2*  re(link2* node)
 
 	return q;
 }
+
+//jainfa  total path
+
+int oath(tree * root,int sum)
+{
+
+	if (root == NULL)
+	{
+		return 0;
+	}
+
+	if (root->left == NULL && root->right == NULL)
+	{
+		if (root->val == sum)
+			return 1;
+		else
+			return 0;
+	}
+
+	return oath(root->left,sum-root->val) || oath(root->right, sum - root->val);
+
+}
