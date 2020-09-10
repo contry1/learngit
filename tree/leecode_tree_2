@@ -58,6 +58,8 @@ int treeis_iso(tree * node)
 }
 
 
+
+
 bool path(struct TreeNode* left, struct TreeNode* right,int sum)
 {
     if(left == NULL || right == NULL)
@@ -170,5 +172,42 @@ tree * ans(tree * root, tree *p, tree * q)
 		return root;
 	}
 
+
+}
+
+
+快乐数
+int fun(int n)
+{
+
+loop:
+	int index = 1;
+	while (n / 10 != 0)
+	{
+		index++;
+		n = n / 10;
+	}
+
+	int  i = 0;
+	int num[1000];
+	for (i = 0; i <index; i++)
+	{
+		num[i] = n % 10;
+		n = n / 10;
+	}
+
+	int t1 = 0;
+	for (i = 0; i < index; i++)
+	{
+		t1 += num[i] * num[i];
+	}
+
+	if (t1 == 1)
+		return  1;
+	else
+	{
+		n = t1;
+		goto loop;
+	}
 
 }
