@@ -305,3 +305,27 @@ link*  combine(link* node1, link* node2)
 	
 
 }
+
+
+link*  del(link* node, int n)
+{
+	link*  prev = node;
+	link*  last = node;
+	link*  del_n = node;
+	while (n)
+	{
+		last = last->next;
+		n--;
+	}
+
+	while (last)
+	{
+		del_n = prev;
+		last = last->next;
+		prev = prev->next;
+	}
+	link*  p = prev;
+	del_n->next = p->next;
+	free(p);
+	return node;
+}
