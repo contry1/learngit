@@ -264,3 +264,44 @@ loop:
 	}
 
 }
+
+
+、、合并来拿吧
+link*  combine(link* node1, link* node2)
+{
+	link* root;
+	if (node1 == NULL && node2 == NULL)
+		return NULL;
+	if (node1 == NULL && node2)
+	{
+		cout << "node22:" << node2->val << endl;
+		return node2;
+	}
+		
+	if (node2 == NULL && node1)
+	{
+		cout << "node11:" << node1->val << endl;
+		return  node1;
+	}
+	
+	if (node1->val <= node2->val)
+	{
+		root = node1;
+		cout << "node1:" << node1->val << endl;
+		root->next =  combine(node1->next, node2);
+	}
+	else
+	{
+		root = node2;
+		cout << "node2:" << node2->val << endl;
+	//	node1->next = node2;
+		root->next = combine(node1 , node2->next);
+	}
+
+
+	
+
+	return root;
+	
+
+}
