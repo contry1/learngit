@@ -78,7 +78,72 @@ bool hasPathSum(struct TreeNode* root, int sum){
 }
 
 
+int num = 0;
+char * pre(char ** str, int size)
+{
+	int i = 0;
+	int j = 0;
+	//过滤异常情况
+	if (size <= 0)
+		return NULL;
+	for (i = 0, j = 1; i < size - 1, j<size; i++, j++)
+	{
+		if (*str[i] == *str[j])
+		{
+			cout << "i: \t" << *str[i] << "j: " << *str[j] << __LINE__ << endl;
+			continue;
+		}
+		else
+		{
+			cout << "i: \t" << *str[i] << "j: " << *str[j] << __LINE__ << endl;
+			return NULL;
+		}
+		
+	}
+	num++;
 
+	//second and other num
+loop:
+	for (i = 0, j = 1; i < size - 1, j<size; i++, j++)
+	{
+		if (*(str[i] + num) == '\0' || *(str[j] + num) == '\0')
+		{
+			//num--;
+			goto exits;
+		}
+			
+		if (*(str[i]+num) == *(str[j]+num))
+		{
+			cout << "i: \t" << *(str[i] + 1) << "j: " << *(str[j] + 1) << __LINE__ << endl;
+		
+			continue;
+		}
+		else
+		{
+			cout << "i: \t" << *(str[i] + 1) << "j: " << *(str[j] + 1) << __LINE__ << endl;
+			goto exits;
+		}
+	}
+	num++;
+	goto loop;
+
+	//*(++str[0]) = '\0';
+	/*char *p[1] = str;
+	p++;
+	*p = '\0';*/
+	//cout << "i: \t" << *(str[0]+1) << "j: " << *((str[1])+1) << __LINE__ << endl;
+exits:	
+	//char * p = new char;
+	//memset(p,'\0',strlen(str[0]));
+	//memcpy(p,str[0],num);
+	cout << "i: \t" << *(str[0] + num) << "num: " << num << __LINE__ << endl;
+	char * p = NULL;
+	p =	&str[0][2];
+	*(p) = '\0';
+	//str[0][2] = '\0';
+	//cout << "i: \t" << *(str[i] + num) << "num: " << num << __LINE__ << endl;
+	return *str;
+}
 //REVERSE  LINK
 link2* q;
 link2*  re(link2* node)
@@ -329,3 +394,4 @@ link*  del(link* node, int n)
 	free(p);
 	return node;
 }
+
