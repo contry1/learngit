@@ -395,3 +395,72 @@ link*  del(link* node, int n)
 	return node;
 }
 
+
+
+char * longestCommonPrefix(char ** strs, int strsSize){
+    int i = 0;
+    int num = 0;
+	int j = 0;
+	//过滤异常情况
+	if (strsSize <= 0||strsSize <1)
+		return "";
+	for (i = 0, j = 1; i < strsSize - 1, j<strsSize; i++, j++)
+	{
+		if (*strs[i] == *strs[j])
+		{
+		//	cout << "i: \t" << *str[i] << "j: " << *str[j] << __LINE__ << endl;
+			continue;
+		}
+		else
+		{
+		//	cout << "i: \t" << *str[i] << "j: " << *str[j] << __LINE__ << endl;
+			return "";
+		}
+		
+	}
+	num++;
+
+	//second and other num
+loop:
+	for (i = 0, j = 1; i < strsSize - 1, j<strsSize; i++, j++)
+	{
+		if (*(strs[i] + num) == '\0' || *(strs[j] + num) == '\0')
+		{
+			//num--;
+			goto exits;
+		}
+			
+		if (*(strs[i]+num) == *(strs[j]+num))
+		{
+		//	cout << "i: \t" << *(str[i] + 1) << "j: " << *(str[j] + 1) << __LINE__ << endl;
+		
+			continue;
+		}
+		else
+		{
+		//	cout << "i: \t" << *(str[i] + 1) << "j: " << *(str[j] + 1) << __LINE__ << endl;
+			goto exits;
+		}
+	}
+	num++;
+	goto loop;
+
+	//*(++str[0]) = '\0';
+	/*char *p[1] = str;
+	p++;
+	*p = '\0';*/
+	//cout << "i: \t" << *(str[0]+1) << "j: " << *((str[1])+1) << __LINE__ << endl;
+    char * p = NULL;
+  
+exits:	
+    p =  (char *)malloc(sizeof(char *));
+	memset(p,'\0',strlen(strs[0]));
+	memcpy(p,strs[0],num);
+//	cout << "i: \t" << *(str[0] + num) << "num: " << num << __LINE__ << endl;
+	// char * p = NULL;
+	// p =	&str[0][2];
+	// *(p) = '\0';
+	//str[0][2] = '\0';
+	//cout << "i: \t" << *(str[i] + num) << "num: " << num << __LINE__ << endl;
+	return p;
+}
