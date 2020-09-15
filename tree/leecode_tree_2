@@ -464,3 +464,34 @@ exits:
 	//cout << "i: \t" << *(str[i] + num) << "num: " << num << __LINE__ << endl;
 	return p;
 }
+
+
+//二叉树公共z
+bool is_father(tree *root, tree * son)
+{
+	if (root == NULL)
+		return 0;
+	if (root->val == son->val)
+		return 1;
+
+	return is_father(root->left) || is_father(root->right);
+
+}
+
+tree * father(tree * root, tree *p, tree * q)
+{
+	if (root == NULL)
+	{
+		return NULL;
+	}
+
+	if (is_father(p, q) == 1)
+		return p;
+	else if (is_father(q, p) == 1)
+		return q;
+	else
+		return root;
+	
+
+
+}
