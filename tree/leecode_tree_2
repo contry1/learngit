@@ -495,3 +495,271 @@ tree * father(tree * root, tree *p, tree * q)
 
 
 }
+
+
+typedef struct queue_t {
+	int rd;
+	int wr;
+	//int data[100];//tree * r = pop(q);//这里提示错误，所以需要重新定义queue结构体
+	tree node[100];
+
+}queue;
+
+//void push(queue * que, int value)
+//{
+//	if (que == NULL)
+//		return;
+//	cout << "que->wr:  " << que->wr << endl;
+//	que->data[que->wr++] = value;
+//	cout << "que->wr2:  " << que->wr << endl;
+//	cout << "que->rd2:  " << que->rd << endl;
+//}
+
+//int pop(queue * que)
+//{
+//	if (que == NULL)
+//		return -1;
+//	cout << que->data[que->rd] << endl;
+//	que->wr--;
+//	return que->data[que->rd];
+//}
+
+int ias_empty(queue *q)
+{
+	if (q == NULL)
+	{
+		return 1;
+	}
+	if (q->wr == q->rd)
+		return 1;
+	else
+		return 0;
+}
+
+void bfs1(tree * root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+
+	queue * q = (queue *)malloc(sizeof(queue ));
+	if (q == NULL)
+		return;
+	memset(q, 0, sizeof(queue));
+	q->wr = 0;
+	q->rd = 0;
+
+	//push(q, root->val);
+	tree * prev = NULL;
+	//pop(q);
+	//while (ias_empty(q) == 0)
+	while (q->wr)
+	{
+	/*	pop(q);*/
+	
+		prev = root;
+		root = root->left;
+		cout << "root val:  " << root->val << endl;
+	/*	push(q, root->val);*/
+	}
+	//root = prev->right;
+	//push(q, root->val);
+	//pop(q);
+
+}
+
+
+void push_demo(queue * que, int value)
+{
+	if (que == NULL)
+		return;
+	cout << "que->wr:  " << que->wr << endl;
+	que->node[que->wr].val = value;
+	cout << "que->wr2:  " << que->wr << endl;
+	cout << "que->rd2:  " << que->rd << endl;
+}
+
+tree * pop_demo(queue * que)
+{
+	if (que == NULL)
+		return NULL;
+	cout << que->node[que->rd].val << endl;
+
+	return &que->node[que->rd];
+}
+
+
+void pop_demo2(queue * que,int num)
+{
+	if (que == NULL)
+		return ;
+	int i = 0;
+	for (i = 0; i < num; i++)
+	{
+		cout << que->node[i].val << endl;
+	}
+	
+
+	//return &que->node[que->rd];
+}
+
+int ** bfs_demo(tree * root,int * returnsize,int **returncolumnsize)
+{
+	if (root == NULL)
+	{
+		return NULL;
+	}
+	int ** ret = (int **)calloc(100,sizeof(int*));
+	*returncolumnsize = (int*)calloc(100,sizeof(int));
+
+	queue * q = (queue *)malloc(sizeof(queue));
+
+	if (q == NULL)
+		return NULL;
+	memset(q, 0, sizeof(queue));
+	q->wr = 0;
+	q->rd = 0;
+
+	push_demo(q, root->val);
+	q->node[q->wr].left = root->left;
+	q->node[q->wr].right = root->right;
+
+	//&q->node[q->wr] = root;
+
+	q->wr++;
+
+	//returnsize[(*returncolumnsize)] = root->val;
+	*returnsize = 0;
+	int len = q->wr-q->rd;
+
+	while (len >0)
+	{
+		ret[*returnsize] = (int *)calloc(len,sizeof(int));
+		(*returncolumnsize)[*returnsize] = len;
+		int i = 0;
+		for (i = 0; i < len; i++)
+		{
+			if (q->node[q->rd].left != NULL)
+			{
+				
+				q->node[q->wr] = *(q->node[q->rd].left);
+				push_demo(q, q->node[q->rd].left->val);
+				q->wr++;
+				cout << "q->wr1  " << q->wr << endl;
+			}
+			if (q->node[q->rd].right != NULL)
+			{
+				q->node[q->wr] = *(q->node[q->rd].right);
+				push_demo(q, q->node[q->rd].right->val);
+				q->wr++;
+				cout << "q->wr2  " << q->wr << endl;
+			}
+			ret[*returnsize][i] = q->node[q->rd].val;
+			q->rd++;
+		}
+		(*returnsize)++;
+		len = q->wr - q->rd;
+
+	}
+
+
+
+	//cout << "bfs :begin "<< endl;
+	//cout << "que-:  " << q->wr << endl;
+	//pop_demo2(q, q->wr);
+	//cout << "bfs :finish " << endl;
+	//return q->wr;
+
+	return ret;
+}
+
+
+int ** bfs_demo2(tree * root, int * returnsize, int **returncolumnsize)
+{
+	if (root == NULL)
+	{
+		return NULL;
+	}
+	int ** ret = (int **)calloc(100, sizeof(int*));
+	*returncolumnsize = (int*)calloc(100, sizeof(int));
+
+	queue * q = (queue *)calloc(100,sizeof(queue));
+	if (q == NULL)
+		return NULL;
+
+
+	//q->node[q->wr].val = root->val;
+	//q->node[q->wr].left = root->left;
+	//q->node[q->wr].right = root->right;
+	//dengjiayuxiam 
+	q->node[q->wr] = *root;
+
+	q->wr++;
+
+	//returnsize[(*returncolumnsize)] = root->val;
+	*returnsize = 0;
+	int len = q->wr - q->rd;
+
+	while (len >0)
+	{
+		ret[*returnsize] = (int *)calloc(len, sizeof(int));
+		(*returncolumnsize)[*returnsize] = len;
+		int i = 0;
+		for (i = 0; i < len; i++)
+		{
+			if (q->node[q->rd].left != NULL)
+			{
+
+				q->node[q->wr] = *(q->node[q->rd].left);
+				q->node[q->wr].val = q->node[q->rd].left->val;
+				q->wr++;
+				cout << "q->wr1  " << q->wr << endl;
+			}
+			if (q->node[q->rd].right != NULL)
+			{
+				q->node[q->wr] = *(q->node[q->rd].right);
+				q->node[q->wr].val = q->node[q->rd].right->val;
+				q->wr++;
+				cout << "q->wr2  " << q->wr << endl;
+			}
+			ret[*returnsize][i] = q->node[q->rd].val;
+			q->rd++;
+		}
+		(*returnsize)++;
+		len = q->wr - q->rd;
+
+	}
+	return ret;
+}
+
+
+	tree *tree1 = NULL;
+	tree1 = create(10);
+	insert(tree1, 5);
+	insert(tree1, 13);
+	insert(tree1, 8);
+	insert(tree1, 2);//9
+	insert(tree1, 12);
+	insert(tree1, 14);
+	//interor_right(tree1);
+	//int level = 0;
+	int returnsize = 0;
+	int *comnlueszie = NULL;
+	int **p = NULL;
+	p = bfs_demo2(tree1,&returnsize,&comnlueszie);
+	cout<< returnsize  <<endl;
+	if( p == NULL)
+		cout << "HELLO" << endl;
+
+	int i = 0,j;
+	for (i = 0; i < returnsize; ++i)//总行数
+	{
+		//cout << comnlueszie[i] << endl;//每行的宽度
+		for (j = 0; j < (comnlueszie)[i]; ++j)
+		{
+			//cout << comnlueszie[i] << endl;
+			cout << p[i][j] << endl;
+		}
+	
+	}
