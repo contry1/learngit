@@ -143,3 +143,44 @@ tree * father(tree * root, tree *p, tree * q)
 
 
 }
+
+bool huiwen(int x)
+{
+	if (x < 0 || x % 10 == 0 && x>0)
+		return 0;
+	int revnum = 0;
+	while (x > revnum)
+	{
+		revnum = revnum * 10 + x % 10;
+		x /= 10;
+	}
+
+	return x == revnum || x == revnum / 10;
+}
+
+int  int_num(int a[], int len)
+{
+	int i = 0;
+	int key = 0;
+	key = a[0];
+	int j = 0;
+	for (i = 1; i < len; ++i)
+	{
+		if (key == a[i])
+		{
+			for (j = i-1; j < len; ++j)
+			{
+				a[j] = a[j+1];
+			
+			}
+			len--;
+			i = i - 1;
+		}
+		else
+		{
+			key = a[i];
+		}
+		
+	}
+	return len;
+}
