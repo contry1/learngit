@@ -184,3 +184,39 @@ int  int_num(int a[], int len)
 	}
 	return len;
 }
+
+
+bool link_is_cicle(link *head, int pos)
+{
+	if (head == NULL|| (head  && pos == -1))
+		return false;
+	if ((head  && pos == 0))
+	{
+		link *slow1 = head;
+		link *fast1 = head->next;
+
+		if (fast1->next == slow1)
+			return true;
+	}
+
+	link *slow = head;
+	link *fast = head;
+
+	do {
+		fast = fast->next;
+		pos--;
+	} while (pos>=0);
+
+	while (slow <= fast)
+	{
+		if (slow == fast)
+			return true;
+		slow = slow->next;
+		do {
+			fast = fast->next;
+			pos--;
+		} while (pos >= 0);
+	}
+
+	return false;
+}
