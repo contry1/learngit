@@ -31,9 +31,13 @@ public:
 				&& (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z' || str[right] >= '0' &&str[right] <= '9'))
 			{
 				
-				if (str[left] == str[right]
-					|| (int)(str[left]) - int(str[right]) == 32
-					|| (int)(str[right]) - int(str[left]) == 32)
+						if (str[left] == str[right]
+					|| ((int)(str[left]) - int(str[right]) == 32) && 
+                    (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z')
+                    && (str[left] >= 'a' &&str[left] <= 'z' || str[left] >= 'A' &&str[left] <= 'Z' )
+					|| (int)(str[right]) - int(str[left]) == 32 &&
+                         (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z')
+                    && (str[left] >= 'a' &&str[left] <= 'z' || str[left] >= 'A' &&str[left] <= 'Z' )//保证都是字母才比较，去除字母和数字之间差异32这个特殊情况
 				{
 					cout << "str[left]:" << (str[left]) << "\tstr[right]:" << str[right] << endl;
 					left++;
@@ -53,9 +57,13 @@ public:
 			if ((str[left] >= 'a' &&str[left] <= 'z' || str[left] >= 'A' &&str[left] <= 'Z' || str[left] >= '0' &&str[left] <= '9')
 				&& (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z' || str[right] >= '0' &&str[right] <= '9'))
 			{
-				if (str[left] == str[right]
-					|| (int)(str[left]) - int(str[right]) == 32
-					|| (int)(str[right]) - int(str[left]) == 32)
+					if (str[left] == str[right]
+					|| ((int)(str[left]) - int(str[right]) == 32) && 
+                    (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z')
+                    && (str[left] >= 'a' &&str[left] <= 'z' || str[left] >= 'A' &&str[left] <= 'Z' )
+					|| (int)(str[right]) - int(str[left]) == 32 &&
+                         (str[right] >= 'a' &&str[right] <= 'z' || str[right] >= 'A' &&str[right] <= 'Z')
+                    && (str[left] >= 'a' &&str[left] <= 'z' || str[left] >= 'A' &&str[left] <= 'Z' )//保证都是字母才比较，去除字母和数字之间差异32
 				{
 					left++;
 					right--;
