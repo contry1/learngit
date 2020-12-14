@@ -4,7 +4,7 @@ class solution {
 public:
 	ListNode * rev(ListNode * head, int m, int n)
 	{
-		if (head == NULL)
+		if (head == NULL||head && head->next == NULL|| m==n)
 			return head;
 
 
@@ -53,11 +53,11 @@ public:
 		cout << "ANS->val 30:" << endl;
 
 #if 0
-		if (dummy1->next != head2)
+		if(m !=1) //dummy1->next != head2)
 		{
 			cout << "ANS->val 40:" << endl;
-			return dummy1->next;
-		//	return head2;
+			
+			return head2;
 		}
 			
 		else
