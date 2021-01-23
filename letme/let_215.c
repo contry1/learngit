@@ -164,19 +164,16 @@ public:
 	}
 
 	//function 6 qsort
-	void qsort(vector<int>& nums, int left, int right, int k ,int &ret)
+	//function 6 qsort
+	
+
+
+	void qsort(vector<int>& nums, int left, int right, int k, int &ret)
 	{
-		if (left + 1 >= right)
-		{
-			if (k == right + 1)
-				ret = nums[left];//5,6
-			
-			return;
-		}
-			
+
 		int a = left;
 		int b = right - 1;
-		int key = nums[rand() % (right - left)];
+		int key = nums[left];
 
 		while (a < b)
 		{
@@ -188,27 +185,69 @@ public:
 			nums[b] = nums[a];
 		}
 		nums[a] = key;
-		if (a == k-1)
+		if (a == k)
 		{
 			ret = nums[a];
 			return;
 		}
-		else if (a > k - 1)
+		else if (a > k)
 		{
-			qsort(nums, left, a, k,ret);
+			qsort(nums, left, a, k, ret);
 		}
 		else
 		{
-			qsort( nums, a+1, right, k,ret);
+			qsort(nums, a + 1, right, k, ret);
 		}
 	}
 
-	int findKthLargest2(vector<int>& nums, int k)
+	int findKthLargest6(vector<int>& nums, int k)
 	{
 		int len = nums.size();
 		int ret = 0;
-		qsort(nums, 0, nums.size(), k,ret);
+		qsort(nums, 0, nums.size(), nums.size() - k, ret);
 		return ret;
-	
+
+	}
+
+	//左闭右闭
+	void qsort(vector<int>& nums, int left, int right, int k, int &ret)
+	{
+
+		int a = left;
+		int b = right;
+		int key = nums[left];
+
+		while (a < b)
+		{
+			while (a < b && nums[b] >= key)
+				--b;
+			nums[a] = nums[b];
+			while (a < b && nums[a] <= key)
+				++a;
+			nums[b] = nums[a];
+		}
+		nums[a] = key;
+		if (a == k)
+		{
+			ret = nums[a];
+			return;
+		}
+		else if (a > k)
+		{
+			qsort(nums, left, a - 1, k, ret);
+		}
+		else
+		{
+			qsort(nums, a + 1, right, k, ret);
+		}
+	}
+
+	int findKthLargest62(vector<int>& nums, int k)
+	{
+		int len = nums.size();
+		int ret = 0;
+		qsort(nums, 0, nums.size() - 1, nums.size() - k, ret);
+		return ret;
+
 	}
 };
