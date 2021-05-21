@@ -1,0 +1,214 @@
+﻿
+1.什么是线程安全？
+1.多个线程同时访问，表现为正确的行为。
+2.无论操作系统如何调度？无论线程的执行顺序是怎样的？
+3.调用端代码无需额外的同步或者协调动作。
+
+STL 中大多数class不是线程安全的。vector ，map,string 等，需要外部枷锁，才能被多个线程同时访问！
+
+
+
+智能指针有2个成员，一个是引用计数是原子的，另外一个原始指针 不是
+
+综合来说 就不是
+
+继续查看文档shared_ptr_thread_safety
+
+    Examples:  引用计数改变 原子操作 安全
+
+shared_ptr<int> p(new int(42));
+
+Code Example 4. Reading a shared_ptr from two threads
+
+		// thread A
+		shared_ptr<int> p2(p); // reads p
+
+		// thread B
+		shared_ptr<int> p3(p); // OK, multiple reads are safe
+
+Code Example 5. Writing different shared_ptr instances from two threads 引用计数改变 原子操作 安全
+
+		// thread A
+		p.reset(new int(1912)); // writes p
+
+		// thread B
+		p2.reset(); // OK, writes p2
+
+Code Example 6. Reading and writing a shared_ptr from two threads
+
+		// thread A
+		p = p3; // reads p3, writes p
+
+		// thread B
+		p3.reset(); // writes p3; undefined, simultaneous read/write
+
+Code Example 7. Reading and destroying a shared_ptr from two threads
+
+		// thread A
+		p3 = p2; // reads p2, writes p3
+
+		// thread B
+		// p2 goes out of scope: undefined, the destructor is considered a "write access"
+
+Code Example 8. Writing a shared_ptr from two threads
+
+		// thread A
+		p3.reset(new int(1));
+
+		// thread B
+		p3.reset(new int(2)); // undefined, multiple writes
+
+		Starting with Boost release 1.33.0, shared_ptr uses a lock-free implementation on most common platforms.
+
+结论：多个线程同时读同一个shared_ptr对象是线程安全的，
+
+但是如果是多个线程对同一个shared_ptr对象进行读和写，则需要加锁。
+
+这里举个例子：怎么多线程调度执行顺序的不确定性。
+
+（shared_ptr）的引用计数本身是安全且无锁的，但对象的读写则不是，因为 shared_ptr 有两个数据成员，读写操作不能原子化。根据文档（http://www.boost.org/doc/libs/release/libs/smart_ptr/shared_ptr.htm#ThreadSafety）， shared_ptr 的线程安全级别和内建类型、标准库容器、std::string 一样，即：
+
+• 一个 shared_ptr 对象实体可被多个线程同时读取（文档例1）；
+
+• 两个 shared_ptr 对象实体可以被两个线程同时写入（例2），“析构”算写操作；
+
+• 如果要从多个线程读写同一个 shared_ptr 对象，那么需要加锁（例3~5）。
+
+请注意，以上是 shared_ptr 对象本身的线程安全级别，不是它管理的对象的线程安全级别
+————————————————
+版权声明：本文为CSDN博主「陈硕」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/solstice/article/details/8547547
+原文链接：https://blog.csdn.net/solstice/article/details/8547547
+
+
+
+2.什么是可重入函数？
+    那什么是不可重入函数呢？
+    为什么中断处理函数不能直接调用不可重入函数？
+    怎样写可重入函数？
+
+就以上三个问题展开小短文：
+2 什么是不可重入函数？
+
+可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以被中断的函数，也就是说，可以在这个函数执行的任何时刻中断它，转入 OS 调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些系统资源，比如全局变量区，中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。
+
+满足下列条件的函数多数是不可重入的：
+
+    函数体内使用了静态（static）的数据结构；
+    函数体内调用了 malloc() 或者 free() 函数；
+    函数体内调用了标准 I/O 函数;
+
+A. 可重入函数
+
+void strcpy(char *lpszDest, char *lpszSrc) 
+{
+    while(*lpszDest++=*lpszSrc++);///< 使用的局部变量
+    *dest=0;
+}
+
+B. 不可重入函数1
+
+char cTemp;    ///< 全局变量
+void SwapChar1(char *lpcX, char *lpcY) 
+{
+    cTemp=*lpcX;
+    *lpcX=*lpcY;
+    lpcY=cTemp;   ///< 访问了全局变量
+}
+
+C. 不可重入函数2
+
+void SwapChar2(char *lpcX,char *lpcY)
+{
+    static char cTemp;  ///< 静态局部变量
+    cTemp=*lpcX;
+    *lpcX=*lpcY;
+    lpcY=cTemp;   ///< 使用了静态局部变量
+}
+
+3 为什么中断处理函数不能直接调用不可重入函数？
+
+在多任务系统下，中断可能在任务执行的任何时间发生；如果一个函数的执行期间被中断后，到重新恢复到断点进行执行的过程中，函数所依赖的环境没有发生改变，那么这个函数就是可重入的，否则就不可重入。
+
+在中断前后不都要保存和恢复上下文吗，怎么会出现函数所依赖的环境发生改变了呢？我们知道中断时确实保存一些上下文，但是仅限于返回地址，cpu 寄存器等之类的少量上下文，而函数内部使用的诸如全局或静态变量，buffer 等并不在保护之列，所以如果这些值在函数被中断期间发生了改变，那么当函数回到断点继续执行时，其结果就不可预料了。
+
+在中断处理函数中调用有互斥锁保护的全局变量，如果恰好该变量正在被另一个线程调用，会导致中断处理函数不能及时返回，导致中断丢失等严重问题。
+
+并且在多线程环境中使用，在没有加锁的情况下，对同一段内存块进行并发读写，就会造成 segmentfault/coredump 之类的问题。
+
+总而言之，中断处理函数做的事情越简单越好。
+4 如何写出可重入的函数？
+
+    在函数体内不访问那些全局变量；
+    如果必须访问全局变量，记住利用互斥信号量来保护全局变量。或者调用该函数前关中断，调用后再开中断；
+    不使用静态局部变量；
+    坚持只使用缺省态（auto）局部变量；
+    在和硬件发生交互的时候，切记关闭硬件中断。完成交互记得打开中断，在有些系列上，这叫做“进入/退出核心”或者用 OS_ENTER_KERNAL/OS_EXIT_KERNAL 来描述；
+    不能调用任何不可重入的函数；
+    谨慎使用堆栈。最好先在使用前先 OS_ENTER_KERNAL；
+	
+	
+	    那什么是不可重入函数呢？
+    为什么中断处理函数不能直接调用不可重入函数？
+    怎样写可重入函数？
+
+就以上三个问题展开小短文：
+2 什么是不可重入函数？
+
+可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以被中断的函数，也就是说，可以在这个函数执行的任何时刻中断它，转入 OS 调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些系统资源，比如全局变量区，中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。
+
+满足下列条件的函数多数是不可重入的：
+
+    函数体内使用了静态（static）的数据结构；
+    函数体内调用了 malloc() 或者 free() 函数；
+    函数体内调用了标准 I/O 函数（因为引用了全局变量printf会引用全局变量stdout，个人理解：如果中断发生的时候,当运行到printf的时候，假设发生了中断嵌套，而此时stdout资源被占用，所以第二个中断printf等待第一个中断的stdout资源释放，第一个中断等待第二个中断返回，造成了死锁）;
+
+A. 可重入函数
+
+void strcpy(char *lpszDest, char *lpszSrc) 
+{
+    while(*lpszDest++=*lpszSrc++);///< 使用的局部变量
+    *dest=0;
+}
+
+B. 不可重入函数1
+
+char cTemp;    ///< 全局变量
+void SwapChar1(char *lpcX, char *lpcY) 
+{
+    cTemp=*lpcX;
+    *lpcX=*lpcY;
+    lpcY=cTemp;   ///< 访问了全局变量
+}
+
+C. 不可重入函数2
+
+void SwapChar2(char *lpcX,char *lpcY)
+{
+    static char cTemp;  ///< 静态局部变量
+    cTemp=*lpcX;
+    *lpcX=*lpcY;
+    lpcY=cTemp;   ///< 使用了静态局部变量
+}
+
+3 为什么中断处理函数不能直接调用不可重入函数？
+
+在多任务系统下，中断可能在任务执行的任何时间发生；如果一个函数的执行期间被中断后，到重新恢复到断点进行执行的过程中，函数所依赖的环境没有发生改变，那么这个函数就是可重入的，否则就不可重入。
+
+在中断前后不都要保存和恢复上下文吗，怎么会出现函数所依赖的环境发生改变了呢？我们知道中断时确实保存一些上下文，但是仅限于返回地址，cpu 寄存器等之类的少量上下文，而函数内部使用的诸如全局或静态变量，buffer 等并不在保护之列，所以如果这些值在函数被中断期间发生了改变，那么当函数回到断点继续执行时，其结果就不可预料了。
+
+在中断处理函数中调用有互斥锁保护的全局变量，如果恰好该变量正在被另一个线程调用，会导致中断处理函数不能及时返回，导致中断丢失等严重问题。
+
+并且在多线程环境中使用，在没有加锁的情况下，对同一段内存块进行并发读写，就会造成 segmentfault/coredump 之类的问题。
+
+总而言之，中断处理函数做的事情越简单越好。
+4 如何写出可重入的函数？
+
+    在函数体内不访问那些全局变量；
+    如果必须访问全局变量，记住利用互斥信号量来保护全局变量。或者调用该函数前关中断，调用后再开中断；
+    不使用静态局部变量；
+    坚持只使用缺省态（auto）局部变量；
+    在和硬件发生交互的时候，切记关闭硬件中断。完成交互记得打开中断，在有些系列上，这叫做“进入/退出核心”或者用 OS_ENTER_KERNAL/OS_EXIT_KERNAL 来描述；
+    不能调用任何不可重入的函数；
+    谨慎使用堆栈。最好先在使用前先 OS_ENTER_KERNAL；
+
