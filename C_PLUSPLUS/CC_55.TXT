@@ -1,0 +1,17 @@
+ITEM7:
+
+declare a virtual destructor in a
+class if and only if that class contains at least one virtual function.
+在 a 中声明一个虚拟析构函数
+class 当且仅当该类包含至少一个虚函数。
+
+
+✦ Polymorphic base classes should declare virtual destructors. If a
+class has any virtual functions, it should have a virtual destructor.
+✦ Classes not designed to be base classes or not designed to be used
+polymorphically should not declare virtual destructors.
+
+✦ 多态基类应该声明虚拟析构函数。 如果一个
+类有任何虚函数，它应该有一个虚析构函数。
+✦ 未设计为基类或未设计为使用的类
+多态不应该声明虚拟析构函数。
