@@ -1,5 +1,41 @@
 letcood 80
 
+	
+	
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if (nums.size() <= 2)
+			return nums.size();
+		std::vector<int>cursor{nums[0],nums[1]};
+
+		int ret = 0;
+		for (auto it = nums.begin()+2; it !=nums.end();) {
+			if (cursor.back() == *cursor.begin()) {
+				if (*it == cursor.back()) {
+					it = nums.erase(it);
+				}
+				else {
+					cursor.erase(cursor.begin());
+					cursor.emplace_back(*it);
+					it++;
+				}
+			}
+			else {
+				cursor.erase(cursor.begin());
+				cursor.emplace_back(*it);
+				it++;
+			}
+			
+		}
+		ret = nums.size();
+		return ret;
+
+    }
+};
+
+
+
 class solution {
 
 public:
