@@ -1,0 +1,155 @@
+simplifyPath
+class solution3 {
+
+巧用分割/,多个连续/会被分配为空字符串，故不用担心异常情况
+public:
+    std::string simplifyPath(std::string path) {
+        auto split = [](const std::string& pat, char del)
+        {
+            std::vector<std::string>ans;
+            std::string cur;
+
+            for (auto& p : pat)
+            {
+                if (p == del)
+                {
+                    ans.push_back(std::move(cur));
+                    cur.clear();
+                }
+                else
+                {
+                    cur += p;
+                }
+            }
+            ans.push_back(std::move(cur));
+            return ans;
+
+        };
+
+        std::vector<std::string>ans = split(path,'/');
+
+        std::vector<std::string>stack;
+        std::string out;
+        for (size_t i = 0; i < ans.size(); i++)
+        {
+            if (ans[i] == "..")
+            {
+                if(!stack.empty())
+                {
+                    stack.pop_back();
+                }
+            }
+            else if(!ans[i].empty() && ans[i] != ".") //
+            {
+                stack.push_back(ans[i]);
+            }
+        }
+
+        if (stack.empty())
+        {
+            out = "/";
+        }
+
+        for (auto& ch : stack)
+        {
+            out += "/" + ch;
+        }
+
+        return out;
+    
+    }
+    
+    下面有问题
+    std::string simpl(std::string path)
+    {
+        //"/a/./b/"
+        std::string ans;
+        std::stack<char>ss;
+        ss.push(path[0]);
+        int flag = 0;
+        for (size_t i = 0; i < path.length(); i++)
+        {
+            if (i == 0)
+                continue;
+
+            if (ss.top() == '/')
+            {
+                if (path[i] == '/')
+                {
+                    continue;
+                }
+                else if (path[i] == '.')
+                {
+                    ss.push(path[i]);
+                }
+                else
+                {
+                    ss.push(path[i]);
+                }
+                
+            }
+            else if (ss.top() == '.')
+            {
+                if (path[i] == '/')
+                {
+                    
+                    if (flag == 1)
+                    {
+                        ss.push(path[i]);
+                        flag = 0;
+                    }
+                    else
+                    {
+                        ss.pop();
+                    }
+                   
+                    continue;
+                }
+                else if (path[i] == '.' &&i< path.length() -1&& path[i+1]!='.')
+                {
+                    ss.pop();
+                    if (ss.size() == 1 && ss.top() == '/') continue;
+                    ss.pop();
+                    if (ss.size() == 1 && ss.top() == '/') continue;
+                    ss.pop();
+                    if (ss.size() == 1 && ss.top() == '/') continue;
+                    ss.pop();
+                    if (ss.size() == 1 && ss.top() == '/') continue;
+                    ss.pop();
+                    if (ss.size() == 1 && ss.top() == '/') continue;
+
+                    continue;
+                }
+                else if(path[i] == '.' && i < path.length() - 1 && path[i + 1] == '.')
+                {
+                    ss.push(path[i]);
+                    int key = i+1;
+                    while (key< path.length() && path[key] == '.')
+                    {
+                        ss.push(path[key]);
+                        key++;
+                    }
+                    i = key-1;
+                    flag = 1;
+                }
+            }
+            else
+            {
+                ss.push(path[i]);
+            }
+
+        }
+
+        if (ss.size() > 1 && ss.top() == '/')
+            ss.pop();
+
+        while(!ss.empty())
+        {
+            ans += ss.top();
+            ss.pop();
+        }
+
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
